@@ -1,0 +1,83 @@
+package api.stepdefinitions;
+
+import io.cucumber.java.en.*;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+
+import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;
+
+import org.junit.Assert;
+
+public class UserSteps {
+
+    private static final String BASE_URL = "https://dummyapi.io/data/v1";
+    private static final String APP_ID = "63a804408eb0cb069b57e43a"; // harus String
+
+    private Response response;
+    private RequestSpecification request;
+
+    @Given("User API is available")
+    public void userApiIsAvailable() {
+        baseURI = BASE_URL;
+
+        request = given()
+                .header("app-id", APP_ID)
+                .header("Content-Type", "application/json");
+    }
+
+    @When("I send a GET request to {string}")
+    public void iSendAGetRequestTo(String endpoint) {
+        response = request.when().get(endpoint);
+        response.then().log().all(); // log untuk debug
+    }
+
+    @When("I send a POST request to {string} with body:")
+    public void iSendAPostRequestToWithBody(String endpoint, String body) {
+        response = request.body(body).when().post(endpoint);
+        response.then().log().all();
+
+        // Simpan ID user yang baru dibuat
+        if (response.getStatusCode() == 200 || response.getStatusCode() == 201) {
+            ApiContext.createdUserId = response.jsonPath().getString("id");
+            System.out.println("Created User ID: " + ApiContext.createdUserId);
+        }
+    }
+
+    @When("I send a PUT request to created user with body:")
+    public void iSendAPutRequestToCreatedUserWithBody(String body) {
+        String endpoint = "/user/" + ApiContext.createdUserId;
+        response = request.body(body).when().put(endpoint);
+        response.then().log().all();
+    }
+
+    @When("I send a DELETE request to created user")
+    public void iSendADeleteRequestToCreatedUser() {
+        String endpoint = "/user/" + ApiContext.createdUserId;
+        response = request.when().delete(endpoint);
+        response.then().log().all();
+    }
+
+    @Then("The response status code should be {int}")
+    public void theResponseStatusCodeShouldBe(int expectedStatusCode) {
+        response.then().statusCode(expectedStatusCode);
+    }
+
+    @Then("The response should contain {string}")
+    public void theResponseShouldContain(String key) {
+        response.then().body("$", hasKey(key));
+    }
+
+    @Then("The value of {string} should be {string}")
+    public void theValueOfShouldBe(String key, String expectedValue) {
+        String actualValue = response.jsonPath().getString(key);
+        Assert.assertEquals(expectedValue, actualValue);
+    }
+
+    // (Opsional) Jika ingin validasi substring
+    @Then("The value of {string} should contain {string}")
+    public void valueShouldContain(String key, String expectedSubstring) {
+        String actual = response.jsonPath().getString(key);
+        Assert.assertTrue(actual.contains(expectedSubstring));
+    }
+}

@@ -1,0 +1,62 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.air'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Cucumber
+    testImplementation 'io.cucumber:cucumber-java:7.14.0'
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.14.0'
+
+    // Selenium
+    testImplementation 'org.seleniumhq.selenium:selenium-java:4.21.0'
+
+    // Rest Assured
+    testImplementation 'io.rest-assured:rest-assured:5.4.0'
+    testImplementation 'io.rest-assured:json-path:5.4.0'
+    testImplementation 'io.rest-assured:json-schema-validator:5.4.0'
+
+    // JUnit 5 (ganti dari JUnit 4)
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+
+    // Jackson (optional untuk parsing JSON)
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_23
+    targetCompatibility = JavaVersion.VERSION_23
+}
+
+test {
+    useJUnitPlatform()  // Gunakan JUnit Platform untuk JUnit 5 dan Cucumber
+}
+
+task testApi(type: Test) {
+    useJUnitPlatform()  // Gunakan JUnit Platform
+    include '**/ApiTestRunner*.class'
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+testApi {
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+}
+
+task testWeb(type: Test) {
+    useJUnitPlatform()  // Gunakan JUnit Platform
+    systemProperty 'cucumber.filter.tags', '@web'  // Filter tags Cucumber untuk Web
+    include '**/WebTestRunner*.class'
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
