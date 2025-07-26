@@ -12,32 +12,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout source code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Setup Java (versi sesuai project kamu, bisa ubah jadi 17 atau 23)
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '21'
 
-      # Permission & run tests
-      - name: Run API & Web UI tests
+      - name: Run tests
         run: |
           chmod +x ./gradlew
           ./gradlew clean testApi
           ./gradlew testWeb
 
-      # Debugging: tampilkan file laporan
-      - name: List all reports
+      - name: List all files in build directory (debug)
         if: always()
         run: |
-          echo ":: All reports in build/reports ::"
-          find build/reports -type f
+          echo ":: List of all files in build ::"
+          find build -type f | sort
 
-      # Upload API reports
+      - name: Upload all reports for debugging
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-reports-debug
+          path: build/reports/**/*.*
+
       - name: Upload API Cucumber HTML Report
         if: always()
         uses: actions/upload-artifact@v4
@@ -52,7 +54,6 @@ jobs:
           name: api-cucumber-json
           path: build/reports/tests/testApi/api-cucumber.json
 
-      # Upload Web UI reports
       - name: Upload Web Cucumber HTML Report
         if: always()
         uses: actions/upload-artifact@v4
