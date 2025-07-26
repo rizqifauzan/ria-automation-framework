@@ -12,31 +12,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout project
+      # Checkout source code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Jalankan API & Web UI test di dalam container
-      - name: Run API & Web UI tests in Selenium container
-        uses: addnab/docker-run-action@v3
+      # Setup Java (versi sesuai project kamu, bisa ubah jadi 17 atau 23)
+      - name: Setup Java
+        uses: actions/setup-java@v3
         with:
-          image: selenium/standalone-chrome:latest
-          options: --shm-size=2g
-          shell: bash
-          run: |
-            apt-get update && apt-get install -y unzip curl
-            chmod +x ./gradlew
-            ./gradlew clean testApi
-            ./gradlew testWeb
+          distribution: 'temurin'
+          java-version: '21'
 
-      # List hasil report (debugging)
-      - name: List report files
+      # Permission & run tests
+      - name: Run API & Web UI tests
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean testApi
+          ./gradlew testWeb
+
+      # Debugging: tampilkan file laporan
+      - name: List all reports
         if: always()
         run: |
-          echo ":: Web UI Reports ::"
-          ls -al build/reports/web-cucumber.* || echo "Web UI report not found"
-          echo ":: API Reports ::"
-          ls -al build/reports/api-cucumber.* || echo "API report not found"
+          echo ":: All reports in build/reports ::"
+          find build/reports -type f
 
       # Upload API reports
       - name: Upload API Cucumber HTML Report
