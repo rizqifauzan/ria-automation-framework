@@ -38,6 +38,7 @@ test {
 
 task testApi(type: Test) {
     useJUnit()
+    systemProperty 'cucumber.filter.tags', '@api'
     include '**/ApiTestRunner*.class'
     testClassesDirs = sourceSets.test.output.classesDirs
     classpath = sourceSets.test.runtimeClasspath
