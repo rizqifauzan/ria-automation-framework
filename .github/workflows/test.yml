@@ -24,19 +24,39 @@ jobs:
       - name: Grant execute permission for Gradle
         run: chmod +x gradlew
 
-      - name: Run API Tests Only
-        run: ./gradlew apiTest
+      # Jalankan test API dan Web UI secara terpisah
+      - name: Run API Tests
+        run: ./gradlew clean testApi
 
-      - name: Upload Cucumber HTML Report
+      - name: Run Web UI Tests
+        run: ./gradlew testWeb
+
+      # ==== REPORT API ====
+      - name: Upload API Cucumber HTML Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cucumber-html-report
+          name: api-cucumber-html
           path: build/reports/tests/api-cucumber.html
 
-      - name: Upload Cucumber JSON Report
+      - name: Upload API Cucumber JSON Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cucumber-json-report
+          name: api-cucumber-json
           path: build/reports/tests/api-cucumber.json
+
+      # ==== REPORT WEB UI ====
+      - name: Upload Web Cucumber HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-cucumber-html
+          path: build/reports/tests/web-cucumber.html
+
+      - name: Upload Web Cucumber JSON Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-cucumber-json
+          path: build/repor
