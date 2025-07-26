@@ -6,9 +6,13 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = "src/test/resources/web_features",  // atau sesuai folder feature kamu
-        glue = "web.stepdefinitions",
-        tags = "@web",
-        plugin = {"pretty", "html:target/web-report.html"}
+        features = "src/test/resources/web_features",
+        glue = {"web.stepdefinitions"},
+        plugin = {
+                "pretty",
+                "html:build/reports/tests/web-cucumber.html",   // ✅ HARUS ADA
+                "json:build/reports/tests/web-cucumber.json"    // ✅ Opsional tapi disarankan
+        },
+        monochrome = true
 )
 public class WebTestRunner {}

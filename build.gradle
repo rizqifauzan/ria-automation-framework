@@ -9,6 +9,16 @@ repositories {
     mavenCentral()
 }
 
+tasks.register('webCucumberTest', Test) {
+    useJUnit() // atau useJUnitPlatform() jika kamu pakai JUnit 5
+
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+
+    // Jalankan hanya WebTestRunner
+    include '**/WebTestRunner.class'
+}
+
 dependencies {
     // Cucumber + JUnit 4
     testImplementation 'io.cucumber:cucumber-java:7.14.0'
@@ -54,6 +64,9 @@ task testWeb(type: Test) {
     include '**/WebTestRunner*.class'
     testClassesDirs = sourceSets.test.output.classesDirs
     classpath = sourceSets.test.runtimeClasspath
+
+    outputs.upToDateWhen { false } // ⬅️ Tambahkan baris ini
+
     testLogging {
         events "passed", "skipped", "failed"
     }
