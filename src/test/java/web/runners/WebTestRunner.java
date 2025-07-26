@@ -6,14 +6,9 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = "classpath:web.features", // folder .feature untuk Web UI
-        glue = "web.stepdefinitions",                 // lokasi step definitions Web UI
-        plugin = {
-                "pretty",
-                "json:build/reports/cucumber/web-report.json",
-                "html:build/reports/cucumber/web-report.html"
-        },
-        tags = "@web"
+        features = "src/test/resources/web_features",  // atau sesuai folder feature kamu
+        glue = "web.stepdefinitions",
+        tags = "@web",
+        plugin = {"pretty", "html:target/web-report.html"}
 )
-public class WebTestRunner {
-}
+public class WebTestRunner {}

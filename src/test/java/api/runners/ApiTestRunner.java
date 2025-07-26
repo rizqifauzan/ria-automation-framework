@@ -1,22 +1,20 @@
-package runners;
+package api.runners;
 
-import org.junit.runner.RunWith;
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
+import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = "classpath:features/api",
-        glue = "api.stepdefinitions",
+        features = "src/test/resources/api_features",         // Lokasi file .feature
+        glue = {"api.stepdefinitions"},                      // Lokasi step definition (package)
         plugin = {
                 "pretty",
-                "json:build/reports/api-test-report.json",
-                "html:build/reports/api-test-report.html"
+                "html:build/reports/api-cucumber.html",
+                "json:build/reports/api-cucumber.json"
         },
-        tags = "@api",
-        monochrome = true
+        tags = "@api",                                        // Hanya jalankan skenario bertag @api
+        monochrome = true                                     // Output lebih bersih di console
 )
-public class ApiTestRunner {
-}
-
+public class ApiTestRunner {}
 

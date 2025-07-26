@@ -10,10 +10,10 @@ repositories {
 }
 
 dependencies {
-    // Cucumber
+    // Cucumber + JUnit 4
     testImplementation 'io.cucumber:cucumber-java:7.14.0'
-    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.14.0'
-
+    testImplementation 'io.cucumber:cucumber-junit:7.14.0'
+    testImplementation 'junit:junit:4.13.2'
 
     // Selenium
     testImplementation 'org.seleniumhq.selenium:selenium-java:4.21.0'
@@ -23,11 +23,7 @@ dependencies {
     testImplementation 'io.rest-assured:json-path:5.4.0'
     testImplementation 'io.rest-assured:json-schema-validator:5.4.0'
 
-    // JUnit 5 (ganti dari JUnit 4)
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
-
-    // Jackson (optional untuk parsing JSON)
+    // Jackson (optional)
     testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
 }
 
@@ -37,26 +33,26 @@ java {
 }
 
 test {
-    useJUnitPlatform()  // Gunakan JUnit Platform untuk JUnit 5 dan Cucumber
+    useJUnit()
 }
 
 task testApi(type: Test) {
-    useJUnitPlatform()  // Gunakan JUnit Platform
+    useJUnit()
     include '**/ApiTestRunner*.class'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    systemProperty 'cucumber.glue', 'api.stepdefinitions' // << Tambah ini
     testLogging {
         events "passed", "skipped", "failed"
     }
 }
 
-testApi {
+task testWeb(type: Test) {
+    useJUnit()
+    systemProperty 'cucumber.filter.tags', '@web'
+    include '**/WebTestRunner*.class'
     testClassesDirs = sourceSets.test.output.classesDirs
     classpath = sourceSets.test.runtimeClasspath
-}
-
-task testWeb(type: Test) {
-    useJUnitPlatform()  // Gunakan JUnit Platform
-    systemProperty 'cucumber.filter.tags', '@web'  // Filter tags Cucumber untuk Web
-    include '**/WebTestRunner*.class'
     testLogging {
         events "passed", "skipped", "failed"
     }
