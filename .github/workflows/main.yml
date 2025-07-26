@@ -1,33 +1,69 @@
-# ==== REPORT WEB UI ====
-- name: Upload Web Cucumber HTML Report
-  if: always()
-  continue-on-error: true
-  uses: actions/upload-artifact@v4
-  with:
-    name: web-cucumber-html
-    path: build/reports/web-cucumber.html
+name: Run Automation Tests
 
-- name: Upload Web Cucumber JSON Report
-  if: always()
-  continue-on-error: true
-  uses: actions/upload-artifact@v4
-  with:
-    name: web-cucumber-json
-    path: build/reports/web-cucumber.json
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
 
-# ==== REPORT API ====
-- name: Upload API Cucumber HTML Report
-  if: always()
-  continue-on-error: true
-  uses: actions/upload-artifact@v4
-  with:
-    name: api-cucumber-html
-    path: build/reports/api-cucumber.html
+jobs:
+  test:
+    runs-on: ubuntu-latest
 
-- name: Upload API Cucumber JSON Report
-  if: always()
-  continue-on-error: true
-  uses: actions/upload-artifact@v4
-  with:
-    name: api-cucumber-json
-    path: build/reports/api-cucumber.json
+    steps:
+      # Checkout project
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Jalankan API & Web UI test di dalam container
+      - name: Run API & Web UI tests in Selenium container
+        uses: addnab/docker-run-action@v3
+        with:
+          image: selenium/standalone-chrome:latest
+          options: --shm-size=2g
+          shell: bash
+          run: |
+            apt-get update && apt-get install -y unzip curl
+            chmod +x ./gradlew
+            ./gradlew clean testApi
+            ./gradlew testWeb
+
+      # List hasil report (debugging)
+      - name: List report files
+        if: always()
+        run: |
+          echo ":: Web UI Reports ::"
+          ls -al build/reports/web-cucumber.* || echo "Web UI report not found"
+          echo ":: API Reports ::"
+          ls -al build/reports/api-cucumber.* || echo "API report not found"
+
+      # Upload API reports
+      - name: Upload API Cucumber HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-cucumber-html
+          path: build/reports/api-cucumber.html
+
+      - name: Upload API Cucumber JSON Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-cucumber-json
+          path: build/reports/api-cucumber.json
+
+      # Upload Web UI reports
+      - name: Upload Web Cucumber HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-cucumber-html
+          path: build/reports/web-cucumber.html
+
+      - name: Upload Web Cucumber JSON Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-cucumber-json
+          path: build/reports/web-cucumber.json
