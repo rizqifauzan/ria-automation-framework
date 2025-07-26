@@ -10,6 +10,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    container:
+      image: selenium/standalone-chrome:latest
+      options: --shm-size=2g
 
     steps:
       - name: Checkout code
@@ -24,14 +27,14 @@ jobs:
       - name: Grant execute permission for Gradle
         run: chmod +x gradlew
 
-      # ===== Run Tests =====
+      # Run tests
       - name: Run API Tests
         run: ./gradlew clean testApi
 
       - name: Run Web UI Tests
         run: ./gradlew testWeb
 
-      # ===== List report files (debugging) =====
+      # List report files (debugging)
       - name: List report files
         if: always()
         run: |
@@ -40,7 +43,7 @@ jobs:
           echo ":: API reports ::"
           ls -al build/reports/tests/api-cucumber.* || echo "API report not found"
 
-      # ===== Upload API Reports =====
+      # Upload API reports
       - name: Upload API Cucumber HTML Report
         if: always()
         continue-on-error: true
@@ -57,7 +60,7 @@ jobs:
           name: api-cucumber-json
           path: build/reports/tests/api-cucumber.json
 
-      # ===== Upload Web UI Reports =====
+      # Upload Web UI reports
       - name: Upload Web Cucumber HTML Report
         if: always()
         continue-on-error: true
