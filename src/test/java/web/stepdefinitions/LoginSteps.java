@@ -23,7 +23,6 @@ public class LoginSteps {
 
     @Given("User navigates to login page")
     public void user_navigates_to_login_page() {
-        System.setProperty("webdriver.chrome.driver", "/Users/mac/Documents/chromedriver");
         driver = new ChromeDriver();
         driver.manage().window().maximize();
         driver.get("https://www.demoblaze.com/");
