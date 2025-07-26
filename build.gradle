@@ -9,16 +9,6 @@ repositories {
     mavenCentral()
 }
 
-tasks.register('webCucumberTest', Test) {
-    useJUnit() // atau useJUnitPlatform() jika kamu pakai JUnit 5
-
-    testClassesDirs = sourceSets.test.output.classesDirs
-    classpath = sourceSets.test.runtimeClasspath
-
-    // Jalankan hanya WebTestRunner
-    include '**/WebTestRunner.class'
-}
-
 dependencies {
     // Cucumber + JUnit 4
     testImplementation 'io.cucumber:cucumber-java:7.14.0'
@@ -46,18 +36,24 @@ test {
     useJUnit()
 }
 
+// Task untuk menjalankan test API
 task testApi(type: Test) {
     useJUnit()
     systemProperty 'cucumber.filter.tags', '@api'
     include '**/ApiTestRunner*.class'
     testClassesDirs = sourceSets.test.output.classesDirs
     classpath = sourceSets.test.runtimeClasspath
-    systemProperty 'cucumber.glue', 'api.stepdefinitions' // << Tambah ini
+    systemProperty 'cucumber.glue', 'api.stepdefinitions'
+
+    // ⬇️ Tambahkan plugin untuk generate report
+    systemProperty 'cucumber.plugin', 'json:build/reports/tests/testApi/api-cucumber.json,html:build/reports/tests/testApi/api-cucumber.html'
+
     testLogging {
         events "passed", "skipped", "failed"
     }
 }
 
+// Task untuk menjalankan test Web UI
 task testWeb(type: Test) {
     useJUnit()
     systemProperty 'cucumber.filter.tags', '@web'
@@ -65,7 +61,10 @@ task testWeb(type: Test) {
     testClassesDirs = sourceSets.test.output.classesDirs
     classpath = sourceSets.test.runtimeClasspath
 
-    outputs.upToDateWhen { false } // ⬅️ Tambahkan baris ini
+    // ⬇️ Tambahkan plugin untuk generate report
+    systemProperty 'cucumber.plugin', 'json:build/reports/tests/testWeb/web-cucumber.json,html:build/reports/tests/testWeb/web-cucumber.html'
+
+    outputs.upToDateWhen { false }
 
     testLogging {
         events "passed", "skipped", "failed"
