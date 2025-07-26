@@ -1,69 +1,48 @@
-name: Run Automation Tests
+name: Run tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
-  workflow_dispatch:
+    branches: [main]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Java
+      - name: Set up Java 23
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: 23
 
-      - name: Run tests
+      - name: Grant execute permission for Gradle
+        run: chmod +x gradlew
+
+      - name: Run testApi and testWeb
+        run: ./gradlew clean testApi testWeb
+
+      - name: List all report files
         run: |
-          chmod +x ./gradlew
-          ./gradlew clean testApi
-          ./gradlew testWeb
+          echo "Listing reports..."
+          find build/reports/tests -type f
 
-      - name: List all files in build directory (debug)
-        if: always()
-        run: |
-          echo ":: List of all files in build ::"
-          find build -type f | sort
-
-      - name: Upload all reports for debugging
-        if: always()
-        uses: actions/upload-artifact@v4
+      - name: Upload API test reports
+        uses: actions/upload-artifact@v3
         with:
-          name: all-reports-debug
-          path: build/reports/**/*.*
+          name: api-test-report
+          path: |
+            build/reports/tests/testApi/api-cucumber.html
+            build/reports/tests/testApi/api-cucumber.json
 
-      - name: Upload API Cucumber HTML Report
-        if: always()
-        uses: actions/upload-artifact@v4
+      - name: Upload Web UI test reports
+        uses: actions/upload-artifact@v3
         with:
-          name: api-cucumber-html
-          path: build/reports/tests/testApi/api-cucumber.html
-
-      - name: Upload API Cucumber JSON Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: api-cucumber-json
-          path: build/reports/tests/testApi/api-cucumber.json
-
-      - name: Upload Web Cucumber HTML Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: web-cucumber-html
-          path: build/reports/tests/testWeb/web-cucumber.html
-
-      - name: Upload Web Cucumber JSON Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: web-cucumber-json
-          path: build/reports/tests/testWeb/web-cucumber.json
+          name: web-test-report
+          path: |
+            build/reports/tests/testWeb/web-cucumber.html
+            build/reports/tests/testWeb/web-cucumber.json
