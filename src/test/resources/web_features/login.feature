@@ -1,33 +1,35 @@
-Feature: User Login on Demoblaze
+Feature: User Login and Cart Operations on Saucedemo
 
   @web
   Scenario: Successful login with valid credentials
-    Given User navigates to login page
-    When User logs in with "air2025" and "12345**"
-    Then User should see welcome message
+    Given User is on the login page
+    When User logs in with username "standard_user" and password "secret_sauce"
+    Then User should be redirected to products page
 
-  Scenario: Failed login with wrong password
-    Given User navigates to login page
-    When User logs in with "air2025" and "wrongpass"
-    Then User should see error message "Wrong password."
+  @web
+  Scenario: Failed login with invalid credentials
+    Given User is on the login page
+    When User logs in with username "locked_out_user" and password "secret_sauce"
+    Then User should be redirected to login page
 
-  Scenario: Failed login with non-existing user
-    Given User navigates to login page
-    When User logs in with "usernotexist" and "abc123"
-    Then User should see error message "Wrong password."
+  @web
+  Scenario: Logout from product page
+    Given User is logged in
+    When User logs out
+    Then User should be redirected to login page
 
-  Scenario: Successful logout after login
-    Given User navigates to login page
-    When User logs in with "ria2025" and "12345**"
-    Then User should see welcome message
-    When User clicks logout
-    Then User should not see welcome message
+  @web
+  Scenario: Add item to cart and verify
+    Given User is logged in
+    When User adds "Sauce Labs Backpack" to cart
+    And User navigates to cart
+    Then Item "Sauce Labs Backpack" should be in the cart
 
-  Scenario: Add item to cart after login
-    Given User navigates to login page
-    When User logs in with "ria2025" and "12345**"
-    Then User should see welcome message
-    When User adds "Samsung galaxy s6" to cart
-    Then Item "Samsung galaxy s6" should be in the cart
-    When User clicks logout
-    Then User should not see welcome message
+  @web @e2e
+  Scenario: End-to-end test – login, add to cart, logout
+    Given User is logged in
+    When User adds "Sauce Labs Bike Light" to cart
+    And User navigates to cart
+    Then Item "Sauce Labs Bike Light" should be in the cart
+    When User logs out
+    Then User should be redirected to login page

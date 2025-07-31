@@ -10,8 +10,8 @@ import org.junit.runner.RunWith;
         glue = {"api.stepdefinitions"},                      // Lokasi step definition (package)
         plugin = {
                 "pretty",
-                "html:build/reports/tests/api-cucumber.html",
-                "json:build/reports/tests/api-cucumber.json"
+                "html:build/reports/tests/testApi/api-cucumber.html",
+                "json:build/reports/tests/testApi/api-cucumber.json"
         },
         tags = "@api",                                        // Hanya jalankan skenario bertag @api
         monochrome = true                                     // Output lebih bersih di console

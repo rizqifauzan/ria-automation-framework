@@ -16,15 +16,9 @@ public class CartPage {
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
-    By cartLink = By.id("cartur");
-    By cartTable = By.id("tbodyid");
-
-    public void openCart() {
-        wait.until(ExpectedConditions.elementToBeClickable(cartLink)).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(cartTable));
-    }
-
     public boolean isItemInCart(String itemName) {
-        return driver.getPageSource().contains(itemName);
+        By itemLocator = By.xpath("//div[@class='inventory_item_name' and text()='" + itemName + "']");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(itemLocator));
+        return driver.findElements(itemLocator).size() > 0;
     }
 }

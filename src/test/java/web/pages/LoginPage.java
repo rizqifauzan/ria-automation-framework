@@ -7,17 +7,12 @@ public class LoginPage {
 
     WebDriver driver;
 
+    By usernameField = By.id("user-name");
+    By passwordField = By.id("password");
+    By loginButton = By.id("login-button");
+
     public LoginPage(WebDriver driver) {
         this.driver = driver;
-    }
-
-    By loginModalBtn = By.id("login2");
-    By usernameField = By.id("loginusername");
-    By passwordField = By.id("loginpassword");
-    By loginButton = By.xpath("//button[text()='Log in']");
-
-    public void openLoginModal() {
-        driver.findElement(loginModalBtn).click();
     }
 
     public void enterUsername(String username) {
@@ -30,7 +25,8 @@ public class LoginPage {
         driver.findElement(passwordField).sendKeys(password);
     }
 
-    public void clickLoginButton() {
+    // ✅ Rename agar sesuai dengan LoginSteps.java
+    public void clickLogin() {
         driver.findElement(loginButton).click();
     }
 }

@@ -10,9 +10,10 @@ import org.junit.runner.RunWith;
         glue = {"web.stepdefinitions"},
         plugin = {
                 "pretty",
-                "html:build/reports/tests/web-cucumber.html",   // ✅ HARUS ADA
-                "json:build/reports/tests/web-cucumber.json"    // ✅ Opsional tapi disarankan
+                "html:build/reports/tests/testWeb/web-cucumber.html",   // ✅ HARUS ADA
+                "json:build/reports/tests/testWeb/web-cucumber.json"    // ✅ Opsional tapi disarankan
         },
+        tags = "@web",
         monochrome = true
 )
 public class WebTestRunner {}
