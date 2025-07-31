@@ -10,7 +10,7 @@ Feature: User Login and Cart Operations on Saucedemo
   Scenario: Failed login with invalid credentials
     Given User is on the login page
     When User logs in with username "locked_out_user" and password "secret_sauce"
-    Then User should be redirected to login page
+    Then User should see error message "Epic sadface: Sorry, this user has been locked out."
 
   @web
   Scenario: Logout from product page

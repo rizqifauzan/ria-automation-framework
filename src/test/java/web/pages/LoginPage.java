@@ -25,8 +25,7 @@ public class LoginPage {
         driver.findElement(passwordField).sendKeys(password);
     }
 
-    // ✅ Rename agar sesuai dengan LoginSteps.java
-    public void clickLogin() {
+    public void clickLoginButton() {
         driver.findElement(loginButton).click();
     }
 }

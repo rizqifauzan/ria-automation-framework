@@ -30,38 +30,53 @@ public class LoginSteps {
         loginPage = new LoginPage(driver);
         homePage = new HomePage(driver);
         cartPage = new CartPage(driver);
+
+        System.out.println("Opened login page.");
     }
 
     @When("User logs in with username {string} and password {string}")
     public void user_logs_in_with_username_and_password(String username, String password) {
+        System.out.println("Logging in with username: " + username);
         loginPage.enterUsername(username);
         loginPage.enterPassword(password);
-        loginPage.clickLogin();
+        loginPage.clickLoginButton();
     }
 
     @Then("User should be redirected to products page")
     public void user_should_be_redirected_to_products_page() {
         wait.until(ExpectedConditions.urlContains("inventory.html"));
         Assert.assertTrue(driver.getCurrentUrl().contains("inventory.html"));
+        System.out.println("Successfully logged in, now on products page.");
+    }
+
+    @Then("User should see error message {string}")
+    public void user_should_see_error_message(String expectedMessage) {
+        WebElement error = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[data-test='error']")));
+        Assert.assertTrue(error.getText().contains(expectedMessage));
+        System.out.println("Error message verified: " + error.getText());
     }
 
     @When("User adds {string} to cart")
-    public void user_adds_item_to_cart(String productName) {
+    public void user_adds_to_cart(String productName) {
+        System.out.println("Adding product to cart: " + productName);
         homePage.addItemToCart(productName);
     }
 
     @When("User navigates to cart")
     public void user_navigates_to_cart() {
-        homePage.goToCart(); // ✅ method yang benar
+        System.out.println("Navigating to cart page...");
+        homePage.goToCart();
     }
 
     @Then("Item {string} should be in the cart")
-    public void item_should_be_in_cart(String productName) {
+    public void item_should_be_in_the_cart(String productName) {
+        System.out.println("Verifying item in cart: " + productName);
         Assert.assertTrue("Item not found in cart", cartPage.isItemInCart(productName));
     }
 
     @When("User logs out")
     public void user_logs_out() {
+        System.out.println("Attempting to logout...");
         homePage.logout();
     }
 
@@ -69,6 +84,7 @@ public class LoginSteps {
     public void user_should_be_redirected_to_login_page() {
         wait.until(ExpectedConditions.urlToBe("https://www.saucedemo.com/"));
         Assert.assertEquals("https://www.saucedemo.com/", driver.getCurrentUrl());
+        System.out.println("Successfully logged out and redirected to login page.");
     }
 
     @Given("User is logged in")
@@ -81,6 +97,7 @@ public class LoginSteps {
     @After
     public void tearDown() {
         if (driver != null) {
+            System.out.println("Closing browser...");
             driver.quit();
         }
     }
