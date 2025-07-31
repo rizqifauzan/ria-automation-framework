@@ -47,9 +47,13 @@ Jalankan hanya test @api
 ./gradlew testApi
 
 # Report Test
-build/reports/cucumber/
-├── cucumber.html  ✅ (HTML Report)
-├── cucumber.json  ✅ (JSON Report)
+build/reports/tests/
+├── testWeb/
+│   ├── web-cucumber.html
+│   └── web-cucumber.json
+├── testApi/
+    ├── api-cucumber.html
+    └── api-cucumber.json
 
 # GitHub Actions
 Test akan otomatis dijalankan melalui GitHub Actions pada:
@@ -58,14 +62,14 @@ Setiap kali terjadi Pull Request
 File workflow CI berada di:
 .github/workflows/ci.yml
 
-# Fitur Test Web UI
-- Login dengan valid credential
-- Login gagal (wrong password & user not exist)
-- Logout setelah login
+# Fitur Test Web UI (menggunakan saucedemo.com)
+- Login dengan kredensial valid
+- Validasi login gagal (password salah & user tidak ada)
+- Logout setelah login berhasil
 - Menambahkan item ke cart
 - Validasi item muncul di cart
 
-# Fitur Test API (contoh dengan Reqres.in)
+# Fitur Test API (menggunakan Reqres.in)
 - Get user
 - Create user
 - Update user
