@@ -1,84 +1,109 @@
-# Automation Testing Framework: Web UI & API
+# 🧪 Automation Testing Framework: Web UI & API
 
-Automation framework ini dibuat untuk melakukan pengujian **Web UI** dan **API** dalam satu repositori, menggunakan pendekatan **Behavior-Driven Development (BDD)** dengan **Cucumber** dan **Gherkin**.
+Framework ini dibuat untuk melakukan pengujian **Web UI** dan **API** dalam satu repositori, menggunakan pendekatan **BDD (Behavior-Driven Development)** dengan **Cucumber** dan **Gherkin**.
 
-# Tools & Libraries
+---
 
-- **Java**
-- **Gradle**
-- **Cucumber**
-- **Selenium WebDriver** (untuk Web UI testing)
-- **Rest Assured** (untuk API testing)
-- **JUnit**
-- **GitHub Actions** (CI/CD)
-- **Gherkin syntax** (untuk feature file)
+## 🔧 Tools & Libraries
 
-# Struktur Project
+- Java 23
+- Gradle
+- Cucumber
+- Selenium WebDriver (untuk Web UI)
+- Rest Assured (untuk API)
+- JUnit
+- GitHub Actions (CI/CD)
+- Gherkin syntax (`.feature`)
 
+---
+
+## 📁 Struktur Project
+
+```
 automation-framework/
 ├── build.gradle
 ├── settings.gradle
 ├── README.md
 ├── .github/workflows/
-│ └── ci.yml (GitHub Actions Workflow)
+│   └── main.yml
 ├── src/test/java/
-│ ├── api/
-│ │ ├── stepdefinitions/
-│ │ └── pages/
-│ ├── web/
-│ │ ├── stepdefinitions/
-│ │ └── pages/
+│   ├── api/
+│   │   ├── stepdefinitions/
+│   │   └── pages/
+│   ├── web/
+│   │   ├── stepdefinitions/
+│   │   └── pages/
 ├── src/test/resources/
-│ ├── api_features/
-│ │ └── user.feature
-│ ├── web_features/
-│ │ └── login.feature
+│   ├── api_features/
+│   │   └── user.feature
+│   ├── web_features/
+│   │   └── login.feature
+```
 
-# Cara Menjalankan Test
+---
 
-### 1. Jalankan semua test (Web UI & API)
+## 🚀 Cara Menjalankan Test
+
+### Jalankan semua test (Web UI & API)
 ```bash
-./gradlew clean test
+./gradlew clean testApi testWeb
+```
 
-Jalankan hanya test @web
+### Jalankan hanya test Web UI
+```bash
 ./gradlew testWeb
+```
 
-Jalankan hanya test @api
+### Jalankan hanya test API
+```bash
 ./gradlew testApi
+```
 
-# Report Test
+---
+
+## 📊 Lokasi Report
+
+Setelah test selesai, report berada di:
+```
 build/reports/tests/
 ├── testWeb/
 │   ├── web-cucumber.html
 │   └── web-cucumber.json
 ├── testApi/
-    ├── api-cucumber.html
-    └── api-cucumber.json
+│   ├── api-cucumber.html
+│   └── api-cucumber.json
+```
 
-# GitHub Actions
-Test akan otomatis dijalankan melalui GitHub Actions pada:
-Manual trigger (via tab Actions)
-Setiap kali terjadi Pull Request
-File workflow CI berada di:
-.github/workflows/ci.yml
+---
 
-# Fitur Test Web UI (menggunakan saucedemo.com)
+## ⚙️ GitHub Actions CI
+
+Workflow otomatis dijalankan saat:
+- Push ke branch `main`
+- Pull request ke `main`
+
+Lokasi workflow:
+```
+.github/workflows/main.yml
+```
+
+Setelah pipeline selesai, hasil test tersedia sebagai **Artifacts** di tab **Actions** di GitHub.
+
+---
+
+## 🧪 Fitur Test
+
+### 🌐 Web UI Test (https://www.saucedemo.com/)
 - Login dengan kredensial valid
-- Validasi login gagal (password salah & user tidak ada)
+- Validasi login gagal (password salah / user tidak ada)
 - Logout setelah login berhasil
-- Menambahkan item ke cart
+- Tambah item ke cart
 - Validasi item muncul di cart
 
-# Fitur Test API (menggunakan Reqres.in)
+### 🔗 API Test (https://reqres.in/)
 - Get user
 - Create user
 - Update user
 - Delete user
 
-
-
-
-
-
-
-
+---
